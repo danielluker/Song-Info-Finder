@@ -1,0 +1,15 @@
+{
+  "name": "song-finder-app",
+  "version": "0.0.1",
+  "description": "Song Finder Application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Daniel F. Luker <daniel.f.luker@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "devDependencies": {}
+}
