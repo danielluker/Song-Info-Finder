@@ -7,6 +7,10 @@
 
 var mainApplication = angular.module('mainPage', []);
 
+// This line of code can only run if we are on a properly set up node server
+var Discogs = require('disconnect').Client;
+
+
 /***
  *
  */
@@ -41,11 +45,15 @@ mainApplication.controller('SearchController', ['$scope', function($scope) {
     	$scope.results = [];
         var dat = "";
         var release = "";
-        $.get("/query", {
-            'query': JSON.stringify($scope.currentSong)
-        }, function(data) {
-            dat = data;
-        }).done(function() {
+
+
+        // $.get("/query", {
+        //     'query': JSON.stringify($scope.currentSong)
+        // }, function(data) {
+        //     dat = data;
+        // }).done(function() {
+
+        findEntry($scope.currentSong, function(dat) {
             var results = dat.results;
             results.forEach(function(song) {
                 $.get(song.resource_url, function(rel) {
@@ -75,6 +83,20 @@ mainApplication.controller('SearchController', ['$scope', function($scope) {
     }
 }]);
 
+
+/***
+ * Function to query the discogs database
+ */
+function findEntry(query, callback) {
+    var result = "<h3>None</h3>";
+    var db = new Discogs({userToken:"LDCLVKhiodWTTnuZyAIVCBSZkrhcaauGhobLlYbX"}).setConfig({outputFormat: 'html'});
+    db = db.database();
+    console.log('Querying the discogs databse for', query);
+    db.search(query.title, prepareQuery(query), function(err, data){
+        result = err ? err : data;
+        callback(result);
+    });
+}
 
 
 /***

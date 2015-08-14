@@ -16,7 +16,7 @@ app.get('/query', function(req, res) {
 	// res.set('Content-Type', 'plaintext');
 	console.log('Received query', req.query['query']);
 	var searchQuery = JSON.parse(req.query['query']);
-	findEntry(searchQuery, res, function(result) {
+	findEntry(searchQuery, function(result) {
 		res.send(result);
 	});
 	console.log("finished get method");
@@ -49,7 +49,7 @@ function prepareQuery(song) {
 /***
  * Function to query the discogs database
  */
-function findEntry(query, res, callback) {
+function findEntry(query, callback) {
 	var result = "<h3>None</h3>";
 	var db = new Discogs({userToken:"LDCLVKhiodWTTnuZyAIVCBSZkrhcaauGhobLlYbX"}).setConfig({outputFormat: 'html'});
 	db = db.database();

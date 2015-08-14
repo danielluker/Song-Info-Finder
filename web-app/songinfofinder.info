@@ -1,0 +1,12 @@
+songinfofinder @ http://songinfofinder-danielluker.rhcloud.com/ (uuid: 55c56db689f5cf7757000033)
+------------------------------------------------------------------------------------------------
+  Domain:     danielluker
+  Created:    Aug 07 10:47 PM
+  Gears:      1 (defaults to small)
+  Git URL:    ssh://55c56db689f5cf7757000033@songinfofinder-danielluker.rhcloud.com/~/git/songinfofinder.git/
+  SSH:        55c56db689f5cf7757000033@songinfofinder-danielluker.rhcloud.com
+  Deployment: auto (on git push)
+
+  nodejs-0.10 (Node.js 0.10)
+  --------------------------
+    Gears: 1 small

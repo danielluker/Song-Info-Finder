@@ -1,0 +1,141 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<!--<![endif]-->
+<html lang="en" ng-app="mainPage">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Song Info Finder App</title>
+
+	<!-- Stylesheets -->
+	<!-- 	<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+	<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css"> -->
+	<link rel="stylesheet" href="app.css">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!-- Bootstrap theme for this application -->
+	<link rel="stylesheet" type="text/css" href="public/styles/bootstrap.min.css">
+
+	<!-- JavaScript -->
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<!-- <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script> -->
+
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/angular-route/angular-route.js"></script>
+	<!-- <script src="app.js"></script> -->
+	<script src="components/version/version.js"></script>
+	<script src="components/version/version-directive.js"></script>
+	<script src="components/version/interpolate-filter.js"></script>
+	<!-- Controller scripts for Angular -->
+	<script type="text/javascript" src="public/js/Release.js"></script>
+	<script type="text/javascript" src="public/js/lehvenstein.js"></script>
+	<script type="text/javascript" src="public/js/controller.js"></script>
+</head>
+
+<body ng-controller="SearchController">
+	<!--[if lt IE 7]>
+	  <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+	<!-- In production use:
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+  -->
+	<div class="wrapper">
+		<div class="top">
+			<h1>Song Info Finder App</h1>
+			<h3>Please fill out as many details as you can</h3>
+			<form role="form" class="input-fields">
+				<div class="form-top">
+					<div class="form-group">
+						<label class="contol-label col-sm-2" for="song_name">Song title</label>
+						<div class="col-sm-4">
+							<input class="form-control" type="text" id="song_name" ng-model="song.title" ng-model-options="{ getterSetter: true }" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="contol-label col-sm-2" for="artist">Artist</label>
+						<div class="col-sm-4">
+							<input class="form-control" type="text" id="artist" ng-model="song.artist" ng-model-options="{ getterSetter: true }">
+						</div>
+					</div>
+				</div>
+				<div class="form-middle">
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="album_name">Album</label>
+						<div class="col-sm-4">
+							<input class="form-control" type="text" id="album_name" ng-model="song.album" ng-model-options="{ getterSetter: true }">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="contol-label col-sm-2" for="album_year">Year</label>
+						<div class="col-sm-4">
+							<input class="form-control" type="text" id="album_year" ng-model="song.year" ng-model-options="{ getterSetter: true }">
+						</div>
+					</div>
+				</div>
+				<div class="help-block">
+					<p>You can upload a list of songs to perform multiple queries</p>
+				</div>
+				<div class="form-bottom">
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="song-list-upload">Song list (.csv)</label>
+						<div class="col-sm-3">
+							<input type="file" id="song-list-upload" ng-model="songListFile">
+						</div>
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-sm" value="Submit" ng-click="performQuery()">Query discogs</button>
+						<button class="btn btn-sm" ng-click="clearQuery()">Clear Query</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="bottom">
+			<h1>Results</h1>
+			<!--	<ul ng-repeat="song in songs | SongFilter:song">
+				<li class="song-info">{{song.artist}} - {{song.title}} ({{song.album}}[{{song.year}}])</li>
+			</ul> -->
+			<div id="res">
+				<table>
+					<tr ng-repeat="release in results | SongFilter:release | orderBy:orderRelease">
+						<td style="width: 300px">
+							<!-- <div class="song-image"> -->
+							<img src="{{release.imageURL}}" alt="album image">
+							<!-- </div> -->
+						</td>
+						<td>
+							<ul type="none" style="float: left">
+								<li>
+									<h3>{{release.title}}</h3>
+								</li>
+								<li>Artist: <em>{{release.artist}}</em></li>
+								<li>Year: <em>{{release.year}}</em></li>
+						</td>
+						<td>
+							<ol>
+								<li ng-repeat="song in release.tracklist">
+									{{song.title}} - ({{song.duration}})
+								</li>
+							</ol>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">SongInfoFinder&copy;, by <a href="http://danielluker.wordpress.com">Daniel Luker</a>, 2015.</p>
+      </div>
+    </div>
+</body>
+
+</html>
