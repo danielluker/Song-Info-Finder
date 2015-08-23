@@ -19,19 +19,19 @@ mainApplication.controller('SearchController', ['$scope', function($scope) {
     $scope.song = {
         title: function(newName) {
             return arguments.length ? ($scope.currentSong.title = newName) : (
-                $scope.currentSong.title ? $scope.currentSong.title : "");
+                $scope.currentSong.title ? $scope.currentSong.title : '');
         },
         artist: function(newArtist) {
             return arguments.length ? ($scope.currentSong.artist = newArtist) : (
-                $scope.currentSong.artist ? $scope.currentSong.artist : "");
+                $scope.currentSong.artist ? $scope.currentSong.artist : '');
         },
         album: function(newAlbum) {
             return arguments.length ? ($scope.currentSong.album = newAlbum) : (
-                $scope.currentSong.album ? $scope.currentSong.album : "");
+                $scope.currentSong.album ? $scope.currentSong.album : '');
         },
         year: function(newYear) {
             return arguments.length ? ($scope.currentSong.year = newYear) : (
-                $scope.currentSong.year ? $scope.currentSong.year : "");
+                $scope.currentSong.year ? $scope.currentSong.year : '');
         },
         printSong: function() {
             console.log($scope.currentSong);
@@ -39,9 +39,9 @@ mainApplication.controller('SearchController', ['$scope', function($scope) {
     };
     $scope.performQuery = function() {
     	$scope.results = [];
-        var dat = "";
-        var release = "";
-        $.get("query", {
+        var dat = '';
+        var release = '';
+        $.get('query', {
             'query': JSON.stringify($scope.currentSong)
         }, function(data) {
             dat = data;
@@ -70,8 +70,11 @@ mainApplication.controller('SearchController', ['$scope', function($scope) {
         $scope.currentSong = {};
     };
     $scope.orderRelease = function(release) {
-        console.log(release);
-        return release.year * (2 * levenshteinenator(release.artist, $scope.song.artist()));
+        // return release.year * (2 * levenshteinenator(release.artist, $scope.song.artist()));
+        var distArray = levenshteinenator(release.artist, $scope.song.artist());
+        var dist = distArray[ distArray.length - 1 ][ distArray[ distArray.length - 1 ].length - 1 ];
+        console.log("the distance is", dist);
+        return release.year == 0 ? 3000 : release.year;
     };
 }]);
 

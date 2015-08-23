@@ -104,15 +104,18 @@
 			<!--	<ul ng-repeat="song in songs | SongFilter:song">
 				<li class="song-info">{{song.artist}} - {{song.title}} ({{song.album}}[{{song.year}}])</li>
 			</ul> -->
+			<div id="spinner" style="text-align: center"><img src="public/resources/spinner.gif" alt="Please wait"/></div>
+			<script type="text/javascript" src="public/js/elements.js"></script>
 			<div id="res">
-				<table>
+				<table border="1" style="width: 100%">
+					<tr><td></td><td></td><td></td><td></td></tr>
 					<tr ng-repeat="release in results | SongFilter:release | orderBy:orderRelease">
-						<td style="width: 300px">
+						<td style="width: 20%">
 							<!-- <div class="song-image"> -->
-							<img src="{{release.imageURL}}" alt="album image">
+							<img src="{{release.imageURL ? release.imageURL : ''}}" alt="album image">
 							<!-- </div> -->
 						</td>
-						<td>
+						<td style="width: 30%">
 							<ul type="none" style="float: left">
 								<li>
 									<h3>{{release.title}}</h3>
@@ -120,12 +123,13 @@
 								<li>Artist: <em>{{release.artist}}</em></li>
 								<li>Year: <em>{{release.year}}</em></li>
 						</td>
-						<td>
+						<td style="width: 50%">
 							<ol>
 								<li ng-repeat="song in release.tracklist">
 									{{song.title}} - ({{song.duration}})
 								</li>
 							</ol>
+						</td>
 					</tr>
 				</table>
 			</div>
