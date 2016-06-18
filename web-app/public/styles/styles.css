@@ -1,16 +1,66 @@
+/* app css stylesheet */
 html,
 body {
   height: 100%;
   /* The html and body elements cannot have any padding or margin. */
+  background-color: #F8F8F8;
 }
 
-/* Wrapper for page content to push down footer */
-.wrapper {
+.menu {
+  list-style: none;
+  border-bottom: 0.1em solid black;
+  margin-bottom: 2em;
+  padding: 0 0 0.5em;
+}
+
+.menu:before {
+  content: "[";
+}
+
+.menu:after {
+  content: "]";
+}
+
+.menu > li {
+  display: inline;
+}
+
+.menu > li:before {
+  content: "|";
+  padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+  content: "";
+  padding: 0;
+}
+
+.wapper {
   min-height: 100%;
-  height: auto !important;
   height: 100%;
   /* Negative indent footer by it's height */
   margin: 0 auto -60px;
+}
+
+/*.wrapper .top, .wrapper .bottom {*/
+/*.top, .bottom {*/
+.wrapper {
+  min-width: 200px;
+  margin-top: 15px;
+  margin-right: 25px;
+  margin-bottom: 15px;
+  margin-left: 25px;
+}
+
+.wrapper .form-top, .wrapper .form-middle, .wrapper .form-bottom {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: auto !important;
+}
+
+.input-fields {
+  padding: 5px;
+  border: 5px;
 }
 
 /* Set the fixed height of the footer here */

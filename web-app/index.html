@@ -1,3 +1,5 @@
+
+
 <!doctype html>
 <!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -15,13 +17,17 @@
 	<title>Song Info Finder App</title>
 
 	<!-- Stylesheets -->
-	<!-- 	<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
-	<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css"> -->
-	<link rel="stylesheet" href="app.css">
+	<!-- 
+	<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+	<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css"> 
+	-->
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<!-- Bootstrap theme for this application -->
 	<link rel="stylesheet" type="text/css" href="public/styles/bootstrap.min.css">
+
+	<!-- Custom stylesheets -->
+	<link rel="stylesheet" type="text/css" href="public/styles/styles.css">
 
 	<!-- JavaScript -->
 	<!-- jQuery library -->
@@ -29,10 +35,12 @@
 	<!-- Latest compiled JavaScript -->
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<!-- <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script> -->
-
 	<script src="bower_components/angular/angular.js"></script>
+	<!-- In production use:
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+	-->
+	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
 	<script src="bower_components/angular-route/angular-route.js"></script>
-	<!-- <script src="app.js"></script> -->
 	<script src="components/version/version.js"></script>
 	<script src="components/version/version-directive.js"></script>
 	<script src="components/version/interpolate-filter.js"></script>
@@ -41,14 +49,10 @@
 	<script type="text/javascript" src="public/js/lehvenstein.js"></script>
 	<script type="text/javascript" src="public/js/controller.js"></script>
 </head>
-
 <body ng-controller="SearchController">
 	<!--[if lt IE 7]>
 	  <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
-	<!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
-  -->
+	<![endif]-->
 	<div class="wrapper">
 		<div class="top">
 			<h1>Song Info Finder App</h1>
@@ -98,48 +102,46 @@
 					</div>
 				</div>
 			</form>
-		</div>
-		<div class="bottom">
-			<h1>Results</h1>
-			<!--	<ul ng-repeat="song in songs | SongFilter:song">
-				<li class="song-info">{{song.artist}} - {{song.title}} ({{song.album}}[{{song.year}}])</li>
-			</ul> -->
-			<div id="spinner" style="text-align: center"><img src="public/resources/spinner.gif" alt="Please wait"/></div>
-			<script type="text/javascript" src="public/js/elements.js"></script>
-			<div id="res">
-				<table border="1" style="width: 100%">
-					<tr><td></td><td></td><td></td><td></td></tr>
-					<tr ng-repeat="release in results | SongFilter:release | orderBy:orderRelease">
-						<td style="width: 20%">
-							<!-- <div class="song-image"> -->
-							<img src="{{release.imageURL ? release.imageURL : ''}}" alt="album image">
-							<!-- </div> -->
-						</td>
-						<td style="width: 30%">
-							<ul type="none" style="float: left">
-								<li>
-									<h3>{{release.title}}</h3>
-								</li>
-								<li>Artist: <em>{{release.artist}}</em></li>
-								<li>Year: <em>{{release.year}}</em></li>
-						</td>
-						<td style="width: 50%">
-							<ol>
-								<li ng-repeat="song in release.tracklist">
-									{{song.title}} - ({{song.duration}})
-								</li>
-							</ol>
-						</td>
-					</tr>
-				</table>
-			</div>
+		</form>
+		<div class="list" id="recent-queries">
+			<h3>Recent Queries</h3>
+			<ul>
+				<li ng-repeat="query in recentQueries">
+						<a ng-click="performQuery(query)">{{query.artist}} - {{query.title}} ({{query.album}}[{{query.year}}])</a>
+				</li>
+			</ul>
 		</div>
 	</div>
-    <div id="footer">
-      <div class="container">
-        <p class="muted credit">SongInfoFinder&copy;, by <a href="http://danielluker.wordpress.com">Daniel Luker</a>, 2015.</p>
-      </div>
-    </div>
+	<div class="bottom">
+		<h1>Results</h1>
+		<div id="spinner" style="text-align: center"><img src="public/resources/spinner.gif" alt="Please wait"/></div>
+		<script type="text/javascript" src="public/js/elements.js"></script>
+		<div id="res">
+			<table border="1" style="width: 100%">
+				<tr><td></td><td></td><td></td><td></td></tr>
+				<tr ng-repeat="release in results | SongFilter:release | orderBy:orderRelease">
+					<td style="width: 20%" ng-click="displayRelease(release)">
+						<!-- <div class="song-image"> -->
+						<img src="{{release.imageURL ? release.imageURL : ''}}" alt="album image">
+						<!-- </div> -->
+					</td>
+					<td style="width: 30%" ng-click="displayRelease(release)">
+						<ul type="none" style="float: left">
+							<li>
+								<h3>{{release.title}}</h3>
+							</li>
+							<li>Artist: <em>{{release.artist}}</em></li>
+							<li>Year: <em>{{release.year}}</em></li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div id="footer">
+		<div class="container">
+			<p class="muted credit">SongInfoFinder&copy;, by <a href="http://danielluker.wordpress.com">Daniel Luker</a>, 2015.</p>
+		</div>
+	</div>
 </body>
-
 </html>

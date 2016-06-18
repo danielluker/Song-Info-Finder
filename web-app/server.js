@@ -9,11 +9,17 @@ var Discogs = require('disconnect').Client;
 /**
  *  Define the sample application.
  */
-var SampleApp = function() {
+var ServerApp = function() {
 
-	//  Scope.
 	var self = this;
 
+	self.store = {
+		cur_size : 0,
+		max_size : 5,
+		lastUpdated : new Date(),
+		recent : {},
+		// full : function() { return self.store.cur_size >= self.store.max_size} ,
+	};
 
 	/*  ================================================================  */
 	/*  Helper functions.                                                 */
@@ -28,7 +34,7 @@ var SampleApp = function() {
 		self.port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 		if (typeof self.ipaddress === "undefined") {
-			//  Log errors on OpenShift but continue w/ 127.0.0.1 - this
+			//  Log errors on OpenShift but continue w/ 127.0.0.1 - self
 			//  allows us to run/test the app locally.
 			console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
 			self.ipaddress = "127.0.0.1";
@@ -111,9 +117,16 @@ var SampleApp = function() {
 		self.routes['/query'] = function(req, res) {
 			// res.set('Content-Type', 'plaintext');
 			var searchQuery = JSON.parse(req.query['query']);
+			self.addQuery(searchQuery);
 			self.findEntry(searchQuery, res, function(result) {
 				res.send(result);
 			});
+		}
+
+		self.routes['/recent_queries'] = function(req, res) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(self.store);
+			console.log("Sent the recent queries to the client", self.store);
 		}
 
 	};
@@ -129,7 +142,7 @@ var SampleApp = function() {
 			'year': song.year
 		}
 		return params;
-	}
+	};
 
 
 	/**
@@ -144,7 +157,7 @@ var SampleApp = function() {
 			result = err ? err : data;
 			callback(result);
 		});
-	}
+	};
 
 
 	/**
@@ -169,7 +182,7 @@ var SampleApp = function() {
 
 
 	/**
-	 *  Initializes the sample application.
+	 *  Initializes the application.
 	 */
 	self.initialize = function() {
 		self.setupVariables();
@@ -182,7 +195,7 @@ var SampleApp = function() {
 
 
 	/**
-	 *  Start the server (starts up the sample application).
+	 *  Start the server (starts up the application).
 	 */
 	self.start = function() {
 		//  Start the app on the specific interface (and port).
@@ -192,14 +205,28 @@ var SampleApp = function() {
 		});
 	};
 
-};   /*  Sample Application.  */
+	self.addQuery = function(query) {
+		// if(self.store.full()) {
+			for(var i = 4; i > 0; i--) {
+				self.store.recent[i] = self.store.recent[i-1];
+			}
+		// }
+		self.store.recent[0] = query;
+		console.log("store is", self.store);
+		console.log("Added query", query);
+	};
+
+};   
+
+
+/*  Sample Application.  */
 
 
 
 /**
  *  main():  Main code.
  */
-var zapp = new SampleApp();
+var zapp = new ServerApp();
 zapp.initialize();
 zapp.start();
 

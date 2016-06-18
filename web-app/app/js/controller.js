@@ -16,9 +16,6 @@ var Discogs = require('disconnect').Client;
  */
 mainApplication.controller('SearchController', ['$scope', function($scope) {
     $scope.results = [];
-    $scope.addSong = function(song) {
-        $scope.results.push(song);
-    }
     $scope.currentSong = {};
     $scope.song = {
         title: function(newName) {
@@ -41,6 +38,9 @@ mainApplication.controller('SearchController', ['$scope', function($scope) {
             console.log($scope.currentSong);
         },
     };
+    $scope.addSong = function(song) {
+        $scope.results.push(song);
+    }
     $scope.performQuery = function() {
     	$scope.results = [];
         var dat = "";

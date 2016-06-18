@@ -5,12 +5,12 @@
 //-----------------------------------------------------------------------
 'use strict';
 
-var mainApplication = angular.module('mainPage', []);
+var mainApplication = angular.module('mainPage', ['ngCookies']);
 
 /***
  *
  */
-mainApplication.controller('SearchController', ['$scope', function($scope) {
+mainApplication.controller('SearchController', ['$scope', '$cookies', '$location', function($scope, $cookies, $location) {
     $scope.results = [];
     $scope.addSong = function(song) {
         $scope.results.push(song);
@@ -37,16 +37,29 @@ mainApplication.controller('SearchController', ['$scope', function($scope) {
             console.log($scope.currentSong);
         },
     };
-    $scope.performQuery = function() {
-    	$scope.results = [];
+    $scope.recentQueries = [];
+    $scope.addRecentQueries = function(queries) {
+        console.log("Added recent queries", queries);
+        $scope.recentQueries = queries;
+    };
+    $scope.performQuery = function(_query) {
+        $scope.results = [];
         var dat = '';
         var release = '';
+        if(_query)
+            console.log('Received parameter for query', _query);
+        var search_query = JSON.stringify(_query ? _query : $scope.currentSong);
+        console.log(search_query);
         $.get('query', {
-            'query': JSON.stringify($scope.currentSong)
+            'query': search_query
         }, function(data) {
             dat = data;
         }).done(function() {
             var results = dat.results;
+            if (!results) {
+                alert('Results not found');
+                return;
+            }
             results.forEach(function(song) {
                 $.get(song.resource_url, function(rel) {
                     release = rel;
@@ -72,10 +85,15 @@ mainApplication.controller('SearchController', ['$scope', function($scope) {
     $scope.orderRelease = function(release) {
         // return release.year * (2 * levenshteinenator(release.artist, $scope.song.artist()));
         var distArray = levenshteinenator(release.artist, $scope.song.artist());
-        var dist = distArray[ distArray.length - 1 ][ distArray[ distArray.length - 1 ].length - 1 ];
-        console.log("the distance is", dist);
+        var dist = distArray[distArray.length - 1][distArray[distArray.length - 1].length - 1];
         return release.year == 0 ? 3000 : release.year;
     };
+    $scope.displayRelease = function(_release) {
+        $cookies.put('selectedQuery', _release);
+        // $location.path('pages/release');
+        // $location.url('pages/release');
+        window.location.assign(window.location + 'public/pages/release.html');
+    }
 }]);
 
 
